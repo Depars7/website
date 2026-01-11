@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Beyond The Mask</title>
+<link rel="icon" type="image/png" href="img/logo.png">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif;}
+body{background:#000;color:#fff;overflow:hidden}
+
+/* ================= LANDING (BACKGROUND ADA) ================= */
+#landing{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+    text-align:center;
+
+    background:
+        linear-gradient(rgba(0,0,0,.6),rgba(0,0,0,.6)),
+        url("img/bg.png");
+    background-size:cover;
+    background-position:center;
+}
+
+#landing h1{font-size:38px}
+#landing p{opacity:.75;max-width:520px}
+
+#startBtn{
+    padding:18px 45px;
+    font-size:18px;
+    border-radius:50px;
+    border:none;
+    background:#00ff99;
+    cursor:pointer;
+}
+
+/* ================= VIDEO MODE (NO BACKGROUND) ================= */
+#popup{
+    position:fixed;
+    inset:0;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    background:#000;
+}
+
+/* VIDEO */
+#videoWrap{
+    width:100%;
+    height:50vh;
+    display:flex;
+    padding: 10px 10px;
+    justify-content:center;
+    align-items:center;
+    transition:opacity .8s ease,height .8s ease;
+}
+#videoWrap.fade{opacity:0}
+
+video{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+}
+
+/* INTRO FULL PAGE */
+#videoWrap.intro{
+    height:100vh;
+}
+#videoWrap.intro video{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+/* TEXT */
+#textBox{
+    height:25vh;
+    padding:30px;
+    max-width:900px;
+    text-align:center;
+    font-size:20px;
+}
+
+/* CONTROLS */
+.controls{
+    display:flex;
+    gap:20px;
+    margin-bottom:30px;
+}
+button.ctrl{
+    padding:12px 30px;
+    border-radius:40px;
+    border:none;
+    background:#00ff99;
+    cursor:pointer;
+}
+button.klick{
+    padding:12px 30px;
+    border-radius:40px;
+    border:none;
+    background:#FEB05D;
+    cursor:pointer;
+}
+#nextBtn,#backBtn{
+    opacity:0;
+    pointer-events:none;
+    transition:.3s;
+}
+.show{
+    opacity:1!important;
+    pointer-events:auto!important;
+}
+
+/* ================= FINAL PAGE (BACKGROUND ADA) ================= */
+#content{
+    display:none;
+    min-height:100vh;
+    padding:80px;
+    color:#fff;
+
+    background:
+        linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),
+        url("img/bg.png");
+    background-size:cover;
+    background-position:center;
+
+    animation:fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0}
+    to{opacity:1}
+}
+
+/* EVENT DETAIL */
+.event-detail{
+    margin-top:40px;
+    max-width:720px;
+    line-height:1.6;
+    font-size:16px;
+}
+
+.event-detail h2{
+    font-size:24px;
+    margin-bottom:15px;
+}
+
+.event-place{
+    margin:15px 0;
+    padding-left:15px;
+    border-left:3px solid #00ff99;
+}
+
+.event-detail ul{
+    margin-top:10px;
+    padding-left:20px;
+}
+.event-detail li{
+    margin-bottom:8px;
+}
+</style>
+</head>
+<body>
+
+<!-- AUDIO -->
+<audio id="bgAudio" src="audio/bg.wav" loop></audio>
+
+<!-- ================= LANDING ================= -->
+<div id="landing">
+    <h1>Beyond the Mask: The Light of Malang</h1>
+    <p>Perancangan New Media Art sebagai Strategi Revitalisasi Budaya Topeng
+Malangan</p>
+    <button id="startBtn">Mulai</button>
+</div>
+
+<!-- ================= VIDEO ================= -->
+<div id="popup">
+    <div id="videoWrap">
+        <video id="video" muted></video>
+    </div>
+
+    <div id="textBox"></div>
+
+    <div class="controls">
+        <button id="backBtn" class="ctrl">Back</button>
+        <button id="nextBtn" class="ctrl">Next</button>
+    </div>
+</div>
+
+<!-- ================= FINAL ================= -->
+<div id="content">
+    <h1>Tujuan Karya</h1>
+    <p style="margin:25px 0; width:100%;">
+        Mengembangkan media interaktif berbasis New Media Art yang dapat menjadi strategi revitalisasi budaya Topeng Malangan agar tetap relevan di era digital. Melalui pendekatan visual dan teknologi kontemporer, perancangan ini berupaya mengemas nilai estetika, filosofi, dan sejarah Topeng Malangan ke dalam format yang lebih atraktif dan mudah diakses oleh generasi muda tanpa menghilangkan esensi budayanya. Menghadirkan pengalaman apresiasi seni yang imersif dan interaktif, sehingga audiens dapat terlibat secara aktif dalam proses mengenal dan memahami budaya Topeng Malangan. Menggali dan memvisualisasikan ulang elemen visual, gerak, dan narasi Topeng Malangan dengan bantuan teknologi seperti projection mapping, instalasi digital agar tercipta bentuk penyajian yang inovatif.
+    </p>
+
+    <!-- DETAIL PAMERAN -->
+    <div class="event-detail">
+        <h2>Acara Pameran</h2>
+
+        <p>
+            Pameran ini diselenggarakan di ruang publik yang populer di kalangan Gen Z
+            untuk mendekatkan akses budaya, bertempat di:
+        </p>
+
+        <p class="event-place">
+            <strong>Astaloka Coffee</strong><br>
+            Jl. Raya Candi, Dinoyo, Kec. Lowokwaru, Kota Malang
+        </p>
+
+        <p>Pameran dibuka untuk umum selama <strong>tiga hari</strong>:</p>
+
+        <ul>
+            <li><strong>Tanggal:</strong> 16 – 18 Januari 2026</li>
+            <li><strong>Waktu:</strong> Pukul 14.00 – 21.00 WIB</li>
+            <li><strong>Pembukaan Resmi:</strong> Jumat, 16 Januari 2026, Pukul 14.00 WIB</li>
+        </ul>
+    </div>
+
+    <button id="restartBtn" class="ctrl" style="margin-top:40px">
+        Mulai Lagi
+    </button>
+<button
+    id="restartBtn"
+    class="klick"
+    style="margin-top:40px; position: relative; z-index: 9999; pointer-events: auto;"
+    onclick="window.open('https://instagram.com/gangcallslow','_blank')"
+>
+    About me!
+</button>
+
+</div>
+
+<script>
+const introVideos=[
+    "video/intro1.mp4",
+    "video/intro2.mp4"
+];
+
+const scenes=[
+    {video:"video/Panji.mp4",text:"Panji adalah tokoh utama dari cerita topeng malangan, dia adalah seorang anak dari raja Prabu Lembu Amiluhur yang memimpin kerajaan Jenggala, yang akan berusaha untuk meminang Dewi Sekartaji"},
+    {video:"video/Klana.mp4",text:"Klana Sewandana adalah raja dari kerajaan Bantarangin yang jatuh cinta kepada sosok Dewi Sekartaji, namun perasaan cintanya terhalang oleh ketulusan sosok Panji pada dewi sekartaji. Sosok yang angkuh, tegas, dan kekuatan yang tidak terkendali terdapat pada sosok Kelana Sewandana."},
+    {video:"video/Gunungsari.mp4",text:"Gunung sari sosok pangeran dan kesatria dari kediri, adik dari Dewi Sekartaji yang digambarkan menjadi kekuatan pria gagah dan kuat yang memiliki ketulusan tinggi dalam cerita Panji."},
+    {video:"video/Bapang.mp4",text:"Bapang adalah saudara dari Kelana Sewandana yang menjadi adipati di Banjar Patoman wilayah yang masih masuk kekuasaannya Kelana sewandana, Bapang sendiri mewakili sebagai sosok gagah, namun memiliki sifat yang keras, dan juga licik."},
+];
+
+let introIndex=0;
+let sceneIndex=0;
+let typingInterval=null;
+
+/* ELEMENT */
+const landing=document.getElementById("landing");
+const popup=document.getElementById("popup");
+const video=document.getElementById("video");
+const videoWrap=document.getElementById("videoWrap");
+const textBox=document.getElementById("textBox");
+const nextBtn=document.getElementById("nextBtn");
+const backBtn=document.getElementById("backBtn");
+const startBtn=document.getElementById("startBtn");
+const restartBtn=document.getElementById("restartBtn");
+const bgAudio=document.getElementById("bgAudio");
+
+/* START */
+startBtn.onclick=()=>{
+    landing.style.display="none";
+    popup.style.display="flex";
+    bgAudio.play().catch(()=>{});
+    playIntro();
+};
+
+/* SWITCH VIDEO */
+function switchVideo(src,cb){
+    videoWrap.classList.add("fade");
+    setTimeout(()=>{
+        video.src=src;
+        video.load();
+        video.play();
+        videoWrap.classList.remove("fade");
+        cb&&cb();
+    },800);
+}
+
+/* INTRO */
+function playIntro(){
+    videoWrap.classList.add("intro");
+    textBox.style.display="none";
+    document.querySelector(".controls").style.display="none";
+
+    switchVideo(introVideos[introIndex]);
+
+    video.onended=()=>{
+        introIndex++;
+        if(introIndex<introVideos.length){
+            switchVideo(introVideos[introIndex]);
+        }else{
+            video.onended=null;
+            videoWrap.classList.remove("intro");
+            textBox.style.display="block";
+            document.querySelector(".controls").style.display="flex";
+            playScene();
+        }
+    };
+}
+
+/* MAIN */
+function playScene(){
+    clearInterval(typingInterval);
+    textBox.innerHTML="";
+    nextBtn.classList.remove("show");
+    backBtn.classList.toggle("show",sceneIndex>0);
+
+    switchVideo(scenes[sceneIndex].video,()=>{
+        typeText(scenes[sceneIndex].text);
+    });
+}
+
+/* TYPE TEXT */
+function typeText(text){
+    let i=0;
+    typingInterval=setInterval(()=>{
+        textBox.innerHTML+=text.charAt(i);
+        i++;
+        if(i>=text.length){
+            clearInterval(typingInterval);
+            nextBtn.classList.add("show");
+        }
+    },40);
+}
+
+/* NAV */
+nextBtn.onclick=()=>{
+    sceneIndex++;
+    if(sceneIndex<scenes.length){
+        playScene();
+    }else{
+        finish();
+    }
+};
+
+backBtn.onclick=()=>{
+    if(sceneIndex>0){
+        sceneIndex--;
+        playScene();
+    }
+};
+
+/* FINISH */
+function finish(){
+    popup.style.display="none";
+    document.getElementById("content").style.display="block";
+    document.body.style.overflow="auto";
+}
+
+/* RESTART */
+restartBtn.onclick=()=>location.reload();
+</script>
+
+</body>
+</html>
