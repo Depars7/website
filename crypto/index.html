@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Inter', sans-serif;
+    background: #09090b;
+    color: #fafafa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+.card {
+    background: #0a0a0c;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 30px 20px;
+    max-width: 550px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 20px 40px -12px rgba(0,0,0,0.5);
+    margin-bottom: 30px;
+}
+.logo {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+}
+.logo svg { width: 32px; height: 32px; color: #fafafa; animation: spin 4s linear infinite; }
+@keyframes spin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
+.title h1 { font-size: 20px; font-weight: 700; color: #fafafa; margin-bottom: 6px; }
+.title p { color: rgba(255,255,255,0.5); font-size: 14px; margin-bottom: 20px; }
+.badge { display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 600; user-select: none; margin-bottom: 20px; }
+.badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.badge-online { color: #10b981; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.35); animation: pulseGlow 1.4s infinite ease-in-out; }
+@keyframes pulseGlow { 0% { box-shadow:0 0 4px currentColor; transform:scale(1);} 50% { box-shadow:0 0 14px currentColor; transform:scale(1.25);} 100% { box-shadow:0 0 4px currentColor; transform:scale(1);} }
+.message { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 14px 12px; text-align: left; margin-bottom: 12px; display:flex; align-items:center; gap:12px; }
+.message-icon { display:flex; align-items:center; gap:10px; font-weight:600; font-size:14px; color:#fbbf24; }
+.message-icon img { width:24px; height:24px; border-radius:50%; }
+.price { font-weight:600; }
+.change { font-weight:500; }
+.price.up { color:#10b981; }
+.price.down { color:#ef4444; }
+@media(max-width:480px){
+    .card{padding:20px 15px;}
+    .logo{width:56px;height:56px;margin-bottom:16px;}
+    .message{flex-direction:column;align-items:flex-start;padding:12px;}
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <div class="logo">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="11" fill="#f5c542" stroke="#d4a017" stroke-width="2"/>
+            <path d="M13 10V3L4 14h7v7l9-11h-7z" fill="#fff"/>
+        </svg>
+    </div>
+    <div class="title">
+        <h1>Price Monitoring</h1>
+        <p>Cryptocurrency Dashboard</p>
+    </div>
+    <span class="badge badge-online">Online</span>
+
+    <div id="messages"></div>
+</div>
+
+<script>
+// Daftar coin dengan logo
+const coins = [
+    {symbol:"BTCUSDT", name:"Bitcoin / USDT", logo:"https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=024"},
+    {symbol:"ETHUSDT", name:"Ethereum / USDT", logo:"https://cryptologos.cc/logos/ethereum-eth-logo.png?v=024"},
+    {symbol:"SOLUSDT", name:"Solana / USDT", logo:"https://cryptologos.cc/logos/solana-sol-logo.png?v=024"},
+    {symbol:"PENGUUSDT", name:"PENGU / USDT", logo:"https://media.bloomingbit.io/prod/news/1df0247d-d000-43ab-bbc2-2f356ced3351.webp?v=024"}
+];
+
+const messagesContainer = document.getElementById("messages");
+const lastPrices = {};
+
+// Buat message box untuk tiap coin
+coins.forEach(coin=>{
+    const div = document.createElement("div");
+    div.className = "message";
+    div.id = coin.symbol;
+    div.innerHTML = `
+        <div class="message-icon"><img src="${coin.logo}" alt="${coin.name} logo"><span>${coin.name}</span></div>
+        <div>$<span class="price">-</span><br>
+        <span class="change">-</span></div>
+    `;
+    messagesContainer.appendChild(div);
+});
+
+// Function update 24h change
+async function update24hChange(symbol) {
+    try {
+        const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${symbol}`);
+        const data = await res.json();
+        let changePercent = parseFloat(data.priceChangePercent);
+        const card = document.getElementById(symbol);
+        const changeEl = card.querySelector(".change");
+        changeEl.textContent = `${changePercent.toFixed(2)}%`;
+        changeEl.style.color = changePercent>=0?"#10b981":"#ef4444";
+    } catch(err){ console.error(err); }
+}
+
+// Setup WebSocket untuk tiap coin
+coins.forEach(coin=>{
+    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${coin.symbol.toLowerCase()}@trade`);
+    const card = document.getElementById(coin.symbol);
+    const priceEl = card.querySelector(".price");
+
+    ws.onmessage = (e)=>{
+        const data = JSON.parse(e.data);
+        let price = parseFloat(data.p);
+        if(coin.symbol==="PENGUUSDT") price = parseFloat(price.toFixed(6)); // 4 angka di belakang untuk PENGU
+        const lastPrice = lastPrices[coin.symbol] || price;
+        priceEl.textContent = price;
+
+        priceEl.classList.remove("up","down");
+        if(price>lastPrice) priceEl.classList.add("up");
+        else if(price<lastPrice) priceEl.classList.add("down");
+        lastPrices[coin.symbol] = price;
+    };
+});
+
+// Update 24h change tiap 60 detik
+coins.forEach(c=>update24hChange(c.symbol));
+setInterval(()=>{ coins.forEach(c=>update24hChange(c.symbol)); },600);
+</script>
+
+</body>
+</html>
